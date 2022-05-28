@@ -1,3 +1,4 @@
+#!/bin/bash
 # Convert PDF to encapsulated PostScript.
 # usage:
 # pdf2eps <page number> <pdf file without ext>
