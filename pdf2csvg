@@ -1,0 +1,16 @@
+#!/bin/bash
+
+filename=$(basename -- "$1")
+extension="${filename##*.}"
+filename="${filename%.*}"
+
+
+echo "converting only the first page..."
+   
+pdfcrop "$1" "temp_$1"
+pdf2svg temp_$1 ${filename}.svg
+rm "temp_$1"
+
+#gs -dNOPAUSE -dBATCH -r300  -dDownScaleFactor=3 -sDEVICE=png16m -sOutputFile="${name}-%d.png" ${name}.pdf
+#gs -dNOPAUSE -dBATCH -r300  -dDownScaleFactor=3 -sDEVICE=png16m -sOutputFile="${name}-%d.png" ${name}.pdf
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+filename=$(basename -- "$1")
+extension="${filename##*.}"
+filename="${filename%.*}"
+
+pages=`pdfinfo $1 |  awk '/Pages/{print $2}'`
+
+
+for (( c=1; c<=$pages; c++ ))
+do
+   echo "Converting page $c"
+   pdf2svg $1 ${filename}-${c}.svg $c
+done
+
+#gs -dNOPAUSE -dBATCH -r300  -dDownScaleFactor=3 -sDEVICE=png16m -sOutputFile="${name}-%d.png" ${name}.pdf
+#gs -dNOPAUSE -dBATCH -r300  -dDownScaleFactor=3 -sDEVICE=png16m -sOutputFile="${name}-%d.png" ${name}.pdf
+

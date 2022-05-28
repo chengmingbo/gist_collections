@@ -1,0 +1,4 @@
+#!/bin/bash
+# Crop PNG Whitespace
+convert $1.png -trim ${1}-tmp.png
+mv ${1}-tmp.png $1.png
