@@ -1,0 +1,19 @@
+#!/bin/bash
+
+filename=$(basename -- "$1")
+extension="${filename##*.}"
+filename="${filename%.*}"
+
+
+echo "1.pandoc md to pdf..."
+pandoc $1 -o ${filename}.pdf
+echo "2.pdfcrop..."
+pdfcrop "${filename}.pdf" "temp_${filename}.pdf"
+echo "3.pdfsvg..."
+pdf2svg "temp_${filename}.pdf" ${filename}.svg
+rm "temp_${filename}.pdf"
+rm ${filename}.pdf
+
+#gs -dNOPAUSE -dBATCH -r300  -dDownScaleFactor=3 -sDEVICE=png16m -sOutputFile="${name}-%d.png" ${name}.pdf
+#gs -dNOPAUSE -dBATCH -r300  -dDownScaleFactor=3 -sDEVICE=png16m -sOutputFile="${name}-%d.png" ${name}.pdf
+
