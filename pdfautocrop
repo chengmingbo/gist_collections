@@ -1,0 +1,69 @@
+#!//usr/bin/env python3
+import os
+import sys 
+import getopt
+from glob import glob
+from datetime import datetime
+from tempfile import TemporaryFile
+import subprocess
+
+
+filename="keep"
+page="1"
+
+def usage():
+    print("""pdfautocrop 
+        -f --filename  pdffile 
+        -p --page  cropping according which page
+        """)
+
+## Parameters
+try:
+    options,args = getopt.getopt(sys.argv[1:], "f:p:",["filename=",
+                                                       "page=",
+                                                       "help"])
+except getopt.GetoptError:
+    print("Erorr Parametes")
+    sys.exit()
+
+
+for k, v in options:
+    if k in ["-h", "--help"]:
+        usage()
+        sys.exit(0)
+ 
+    if k in ["-f", "--file"]:
+        filename = v 
+ 
+    if k in ["-p", "--page"]:
+        page = v 
+
+
+execute=os.system
+
+cmd = f'pdftk "{filename}" cat {page} output "/tmp/tmp.pdf"'
+print(f"cropping according page {page}...")
+execute(cmd)
+
+basename = os.path.splitext(filename)[0]
+crop_out = f"{basename}_crop.pdf"
+
+## get box
+
+
+
+output = subprocess.check_output(['pdfcrop', '--verbose', '/tmp/tmp.pdf']).decode()
+
+left = ""
+bottom = ""
+right = ""
+top = ""
+for line in output.split('\n'):
+    if line.startswith(r"%%HiResBoundingBox:"):
+        box_size = line.lstrip(r'%%HiResBoundingBox: ')   
+        items = box_size.split(' ')
+        assert(len(items)==4)
+        left,bottom,right,top = items
+
+cmd = f'pdfcrop --bbox "{left} {bottom} {right} {top}" "{filename}"'
+execute(cmd)
