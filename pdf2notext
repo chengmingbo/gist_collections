@@ -1,0 +1,13 @@
+#!/bin/bash
+
+input="${1}.pdf"
+if test -f "$input"; then
+    echo
+else
+    echo "file $input does not exist."
+    exit 1
+fi
+
+gs -o "$1-temp.pdf" -sDEVICE=pdfwrite -dFILTERTEXT "$1.pdf"
+mv "$1-temp.pdf" "$1.pdf"
+

@@ -1,0 +1,16 @@
+#!/bin/bash
+input=$1
+output=$2
+#echo "input:".$input
+#echo "output:".$output
+
+if test -f "$input"; then
+    echo
+else
+    echo "file $input does not exist."
+    exit 1
+fi
+
+
+
+gs -o "${output}" -sDEVICE=pdfwrite -dFILTERTEXT  "${input}"

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+input="$1"
+pages="$2"
+directory=$3
+
+if test -f "$input"; then
+    echo
+else
+    echo "file $input does not exist."
+    exit 1
+fi
+base_name=`basename ${input}`
+base_predix="${base_name%.*}"
+parent_dir=`dirname "$input"`
+
+if [[ $pages == *-* ]]
+then
+  page_start=$(echo "$pages" | cut -d- -f1)
+  page_end=$(echo "$pages" | cut -d- -f2)
+  echo $page_start
+  echo $page_end
+  #for page in {$page_start..$page_end}
+  for (( page=$page_start; page<=$page_end; page++ ))
+  do
+    echo "$page"
+    output="${parent_dir}/${base_predix}_${page}.pdf"
+    if [ -z "$3" ]
+    then
+      #empty
+      echo
+    else
+      output="${3}/${base_predix}_${page}.pdf"
+    fi
+
+    echo pdftk "${input}" cat "$page" output "$output"
+    pdftk "${input}" cat "$page" output "$output"
+
+  done
+else
+  echo
+  IFS=','
+  read -r -a page_array <<< "$pages"
+  for page in "${page_array[@]}"
+  do
+    output="${parent_dir}/${base_predix}_${page}.pdf"
+    if [ -z "$3" ]
+    then
+      #empty
+      echo
+    else
+      output="${3}/${base_predix}_${page}.pdf"
+    fi
+
+    echo pdftk "${input}" cat "$page" output "$output"
+    pdftk "${input}" cat "$page" output "$output"
+  done
+  ## comma
+  #page_start=$(echo "$page" | cut -d- -f1)
+  #page_end=$(echo "$page" | cut -d- -f2)
+fi
+
