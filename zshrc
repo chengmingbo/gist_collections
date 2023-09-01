@@ -33,6 +33,226 @@ source $ZSH/oh-my-zsh.sh
 #}
 #
 
+
+function pdf2crop_()
+{
+        # Convert PDF to encapsulated PostScript.
+        # usage:
+        # pdf2eps <page number> <pdf file without ext>
+
+        pdfcrop "$1.pdf" "${1}-temp.pdf"
+        #mv "$1-temp.pdf" "$1.pdf"
+
+        #pdftk  "$1-temp.pdf" cat 1 output "$1.pdf"
+        #pdfjam "$1-temp.pdf"  1 -o "$1.pdf"
+        gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dFirstPage=1 -dLastPage=1 -sOutputFile="${1}.pdf" "${1}-temp.pdf"
+        rm "${1}-temp.pdf"
+}
+
+function pdf2page_()
+{
+        input="$1"
+        page="$2"
+        directory=$3
+
+        if test -f "$input"; then
+            echo
+        else
+            echo "file $input does not exist."
+            exit 1
+        fi
+        base_name=`basename ${input}`
+        base_predix="${base_name%.*}"
+        parent_dir=`dirname "$input"`
+
+
+        output="${parent_dir}/${base_predix}_${page}.pdf"
+
+        if [ -z "$3" ]
+        then
+          #empty
+          echo
+        else
+          output="${3}/${base_predix}_${page}.pdf"
+        fi
+
+        #echo pdftk "${input}" cat "$page" "$output"
+        #pdftk "${input}" cat "$page" output "$output"
+        echo gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dFirstPage=$page -dLastPage=${page} -sOutputFile="${output}" "${input}"
+        gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dFirstPage=${page} -dLastPage=${page} -sOutputFile="${output}" "${input}"
+}
+
+
+function pdf2cpage_()
+{
+        input="$1"
+        page="$2"
+        directory=$3
+
+        if test -f "$input"; then
+            echo
+        else
+            echo "file $input does not exist."
+            exit 1
+        fi
+        base_name=`basename ${input}`
+        base_predix="${base_name%.*}"
+        parent_dir=`dirname "$input"`
+
+
+        output="${parent_dir}/${base_predix}_${page}.pdf"
+
+        if [ -z "$3" ]
+        then
+          #empty
+          echo
+        else
+          output="${3}/${base_predix}_${page}.pdf"
+        fi
+
+        #echo pdftk "${input}" cat "$page" "$output"
+        #pdftk "${input}" cat "$page" output "$output"
+        echo "extracting page_${page}"
+        gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dFirstPage=${page} -dLastPage=${page} -sOutputFile="${output}-temp" "${input}"
+
+        echo "crop the pdf"
+        pdfcrop "${output}-temp" "${output}"
+        rm "${output}-temp"
+        #pdftk  "$1-temp.pdf" cat 1 output "$1.pdf"
+        #pdfjam "$1-temp.pdf"  1 -o "$1.pdf"
+}
+
+function pdf2pages_()
+{
+ input="$1"
+ pages="$2"
+ directory=$3
+
+ if test -f "$input"; then
+     echo
+ else
+     echo "file $input does not exist."
+     exit 1
+ fi
+ base_name=`basename ${input}`
+ base_predix="${base_name%.*}"
+ parent_dir=`dirname "$input"`
+
+ if [[ $pages == *-* ]]
+ then
+   page_start=$(echo "$pages" | cut -d- -f1)
+   page_end=$(echo "$pages" | cut -d- -f2)
+   echo $page_start
+   echo $page_end
+   #for page in {$page_start..$page_end}
+   for (( page=$page_start; page<=$page_end; page++ ))
+   do
+     echo "$page"
+     output="${parent_dir}/${base_predix}_${page}.pdf"
+     if [ -z "$3" ]
+     then
+       #empty
+       echo
+     else
+       output="${3}/${base_predix}_${page}.pdf"
+     fi
+
+     echo pdftk "${input}" cat "$page" output "$output"
+     gs -sdevice=pdfwrite -dnopause -dbatch -dfirstpage=${page} -dlastpage=${page} -soutputfile="${output}" "${input}"
+
+   done
+ else
+   echo
+   ifs=','
+   read -r -a page_array <<< "$pages"
+   for page in "${page_array[@]}"
+   do
+     output="${parent_dir}/${base_predix}_${page}.pdf"
+     if [ -z "$3" ]
+     then
+       #empty
+       echo
+     else
+       output="${3}/${base_predix}_${page}.pdf"
+     fi
+
+     echo pdftk "${input}" cat "$page" output "$output"
+     gs -sdevice=pdfwrite -dnopause -dbatch -dfirstpage=${page} -dlastpage=${page} -soutputfile="${output}" "${input}"
+   done
+   ## comma
+   #page_start=$(echo "$page" | cut -d- -f1)
+   #page_end=$(echo "$page" | cut -d- -f2)
+ fi
+}
+
+
+function pdf2cpages_()
+{
+ input="$1"
+ pages="$2"
+ directory=$3
+
+ if test -f "$input"; then
+     echo
+ else
+     echo "file $input does not exist."
+     exit 1
+ fi
+ base_name=`basename ${input}`
+ base_predix="${base_name%.*}"
+ parent_dir=`dirname "$input"`
+
+ if [[ $pages == *-* ]]
+ then
+   page_start=$(echo "$pages" | cut -d- -f1)
+   page_end=$(echo "$pages" | cut -d- -f2)
+   echo $page_start
+   echo $page_end
+   #for page in {$page_start..$page_end}
+   for (( page=$page_start; page<=$page_end; page++ ))
+   do
+     echo "$page"
+     output="${parent_dir}/${base_predix}_${page}.pdf"
+     if [ -z "$3" ]
+     then
+       #empty
+       echo
+     else
+       output="${3}/${base_predix}_${page}.pdf"
+     fi
+
+     #echo pdftk "${input}" cat "$page" output "$output"
+     gs -sdevice=pdfwrite -dnopause -dbatch -dfirstpage=${page} -dlastpage=${page} -soutputfile="${output}-temp" "${input}"
+     pdfcrop "${output}-temp" "${output}"
+     rm "${output}-temp"
+
+   done
+ else
+   echo
+   ifs=','
+   read -r -a page_array <<< "$pages"
+   for page in "${page_array[@]}"
+   do
+     output="${parent_dir}/${base_predix}_${page}.pdf"
+     if [ -z "$3" ]
+     then
+       #empty
+       echo
+     else
+       output="${3}/${base_predix}_${page}.pdf"
+     fi
+
+     #echo pdftk "${input}" cat "$page" output "$output"
+     gs -sdevice=pdfwrite -dnopause -dbatch -dfirstpage=${page} -dlastpage=${page} -soutputfile="${output}-temp" "${input}"
+     pdfcrop "${output}-temp" "${output}"
+     rm "${output}-temp"
+   done
+   ## comma
+   #page_start=$(echo "$page" | cut -d- -f1)
+   #page_end=$(echo "$page" | cut -d- -f2)
+ fi
+}
+
 show_colour() {
     perl -e 'foreach $a(@ARGV){print "\e[48;2;".join(";",unpack("C*",pack("H*",$a)))."m \e[49m "};print "\n"' "$@"
 }
