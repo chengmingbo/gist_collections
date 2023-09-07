@@ -1,0 +1,23 @@
+#!/bin/bash
+
+## markerdown file to RestructuredText file
+#cd ~/Downloads
+#git clone https://github.com/lepture/mistune.git
+#cd mistune
+#pip install .
+
+input=$1
+
+#set -x
+if [ -z "$2" ]; then
+  base_name=`basename ${input}`
+  base_predix="${base_name%.*}"
+  parent_dir=`dirname "$input"`
+  output=${parent_dir}/${base_predix}.rst
+else
+  output=$2
+fi
+
+python3 -m mistune -f $input -r rst -o $output
+
+#set +x
