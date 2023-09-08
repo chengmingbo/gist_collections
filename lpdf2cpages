@@ -21,17 +21,17 @@ for ((i=0; i<${#arr[@]}; i++)); do
     base_predix="${base_name%.*}"
     parent_dir=`dirname "$input"`
     pages=`echo "$pages" | tr '[:upper:]' '[:lower:]'`
-
+    
     if [[ "${pages}" == "all" ]];
     then
-      last_page=`qpdf --show-npages ${input}`
+      last_page=`qpdf --show-npages "${input}"`
       pages="1-$last_page"
     fi
-
+    
     if [[ $var =~ ^-?[0-9]+$ ]] ; then
        pages=${pages}-${pages}
     fi
-
+    
     echo "pages: >>>>>>>>" $pages "<<<<<<<<"
     if [[ $pages == *-* ]]
     then
@@ -50,13 +50,13 @@ for ((i=0; i<${#arr[@]}; i++)); do
           output="${directory}/${base_predix}_${page}.pdf"
           output_base="${directory}/${base_predix}_${page}"
         fi
-
+    
         #echo pdftk "${input}" cat "$page" output "$output"
         gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=$page -dLastPage=$page -sstdout=/dev/null -sOutputFile="${output_base}-temp.pdf" "${input}"
-
+    
         pdfcrop  --noverbose "${output_base}-temp.pdf" "${output}"
         rm "${output_base}-temp.pdf"
-
+    
       done
     else
       echo ","
@@ -73,13 +73,13 @@ for ((i=0; i<${#arr[@]}; i++)); do
           output="${directory}/${base_predix}_${page}.pdf"
           output_base="${directory}/${base_predix}_${page}"
         fi
-
+    
         #echo pdftk "${input}" cat "$page" output "$output"
         # pdfjam(TeX) <input file> <page ranges> -o <output file>
         # pdfseparate -f 1 -l 1 sample.pdf sample-1.pdf
         # qpdf input.pdf --pages . 1-10 -- output.pdf
         gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}-temp.pdf" "${input}"
-
+    
         pdfcrop --noverbose "${output_base}-temp.pdf" "${output}"
         rm "${output_base}-temp.pdf"
       done

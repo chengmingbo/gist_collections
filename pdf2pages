@@ -39,8 +39,7 @@ then
   done
 else
   echo
-  IFS=','
-  read -r -a page_array <<< "$pages"
+  IFS=',' read -r -a page_array <<< "$pages"
   for page in "${page_array[@]}"
   do
     output="${parent_dir}/${base_predix}_${page}.pdf"

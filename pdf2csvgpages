@@ -33,6 +33,7 @@ then
   for (( page=$page_start; page<=$page_end; page++ ))
   do
     output="${parent_dir}/${base_predix}_${page}.pdf"
+    outputsvg="${parent_dir}/${base_predix}_${page}.svg"
     output_base="${parent_dir}/${base_predix}_${page}"
     if [ -z "$directory" ]
     then
@@ -48,7 +49,9 @@ then
 
     pdfcrop  --noverbose "${output_base}-temp.pdf" "${output}"
     rm "${output_base}-temp.pdf"
-    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${input}"
+    pdf2svg $output $outputsvg
+    rm $output
+
   done
 else
   echo ","
@@ -56,6 +59,7 @@ else
   for page in "${page_array[@]}"
   do
     output="${parent_dir}/${base_predix}_${page}.pdf"
+    outputsvg="${parent_dir}/${base_predix}_${page}.svg"
     output_base="${parent_dir}/${base_predix}_${page}"
     if [ -z "$directory" ]
     then
@@ -75,7 +79,8 @@ else
     pdfcrop --noverbose "${output_base}-temp.pdf" "${output}"
     rm "${output_base}-temp.pdf"
 
-    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${input}"
+    pdf2svg $output $outputsvg
+    rm $output
 
   done
   ## comma

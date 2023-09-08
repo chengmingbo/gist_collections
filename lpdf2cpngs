@@ -23,7 +23,7 @@ for ((i=0; i<${#arr[@]}; i++)); do
 
         if [[ "${pages}" == "all" ]];
         then
-          last_page=`qpdf --show-npages ${input}`
+          last_page=`qpdf --show-npages "${input}"`
           pages="1-$last_page"
         fi
 
@@ -89,5 +89,5 @@ for ((i=0; i<${#arr[@]}; i++)); do
           #page_start=$(echo "$page" | cut -d- -f1)
           #page_end=$(echo "$page" | cut -d- -f2)
         fi
-
+         
 done
