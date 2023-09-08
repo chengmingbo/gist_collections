@@ -16,7 +16,7 @@ for ((i=0; i<${#arr[@]}; i++)); do
             echo "file $input does not exist."
             exit 1
         fi
-        base_name=`basename ${input}`
+        base_name=`basename "${input}"`
         base_predix="${base_name%.*}"
         parent_dir=`dirname "$input"`
         pages=`echo "$pages" | tr '[:upper:]' '[:lower:]'`

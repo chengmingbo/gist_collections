@@ -10,7 +10,7 @@ else
     echo "file $input does not exist."
     exit 1
 fi
-base_name=`basename ${input}`
+base_name=`basename "${input}"`
 base_predix="${base_name%.*}"
 parent_dir=`dirname "$input"`
 

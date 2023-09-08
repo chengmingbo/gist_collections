@@ -9,7 +9,7 @@ else
     echo "file $input does not exist."
     exit 1
 fi
-base_name=`basename ${input}`
+base_name=`basename "${input}"`
 base_predix="${base_name%.*}"
 parent_dir=`dirname "$input"`
 pages=`echo "$pages" | tr '[:upper:]' '[:lower:]'`
@@ -79,8 +79,8 @@ else
     pdfcrop --noverbose "${output_base}-temp.pdf" "${output}"
     rm "${output_base}-temp.pdf"
 
-    pdf2svg $output $outputsvg
-    rm $output
+    pdf2svg "$output" "$outputsvg"
+    rm "$output"
 
   done
   ## comma
