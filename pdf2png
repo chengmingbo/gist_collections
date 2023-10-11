@@ -1,0 +1,30 @@
+# Convert PDF to encapsulated PostScript.
+# usage:
+# pdf2eps <page number> <pdf file without ext>
+input="$1"
+#pages="$2"
+#directory=$3
+
+if test -f "$input"; then
+    echo
+else
+    echo "file $input does not exist."
+    exit 1
+fi
+base_name=`basename "${input}"`
+base_predix="${base_name%.*}"
+parent_dir=`dirname "$input"`
+#pages=`echo "$pages" | tr '[:upper:]' '[:lower:]'`
+
+output_base="${parent_dir}/${base_predix}"
+
+
+pdfcrop "${input}" "${parent_dir}/${base_predix}-temp.pdf"
+#mv "$1-temp.pdf" "$1.pdf"
+#pdftk  "$1-temp.pdf" cat 1 output "$1.pdf"
+#pdfjam "$1-temp.pdf"  1 -o "$1.pdf"
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dFirstPage=1 -dLastPage=1 -sOutputFile="${input}" "${parent_dir}/${base_predix}-temp.pdf"
+gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=1 -dLastPage=2  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${parent_dir}/${base_predix}-temp.pdf"
+
+#pdftk  "$1-temp.pdf" cat 1 output "$1.pdf"
+rm "${parent_dir}/${base_predix}-temp.pdf"
