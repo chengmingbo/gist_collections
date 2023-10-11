@@ -44,7 +44,10 @@ then
     fi
 
     #echo pdftk "${input}" cat "$page" output "$output"
-    gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=$page -dLastPage=$page -sstdout=/dev/null -sOutputFile="${output}" "${input}"
+    gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFILTERTEXT -dFirstPage=$page -dLastPage=$page -sstdout=/dev/null -sOutputFile="${output_base}-temp.pdf" "${input}"
+
+    pdfcrop  --noverbose "${output_base}-temp.pdf" "${output}"
+    rm "${output_base}-temp.pdf"
 
   done
 else
@@ -67,7 +70,10 @@ else
     # pdfjam(TeX) <input file> <page ranges> -o <output file>
     # pdfseparate -f 1 -l 1 sample.pdf sample-1.pdf
     # qpdf input.pdf --pages . 1-10 -- output.pdf
-    gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output}" "${input}"
+    gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFILTERTEXT -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}-temp.pdf" "${input}"
+
+    pdfcrop --noverbose "${output_base}-temp.pdf" "${output}"
+    rm "${output_base}-temp.pdf"
   done
   ## comma
   #page_start=$(echo "$page" | cut -d- -f1)

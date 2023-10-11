@@ -1,9 +1,11 @@
 # Convert PDF to encapsulated PostScript.
 # usage:
 # pdf2eps <page number> <pdf file without ext>
-
-pdfcrop "$1.pdf" "$1-temp.pdf"
+pdfcrop "$1.pdf" "${1}-temp.pdf"
 #mv "$1-temp.pdf" "$1.pdf"
 
+#pdftk  "$1-temp.pdf" cat 1 output "$1.pdf"
+#pdfjam "$1-temp.pdf"  1 -o "$1.pdf"
+gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dFirstPage=1 -dLastPage=1 -sOutputFile="${1}.pdf" "${1}-temp.pdf"
 pdftk  "$1-temp.pdf" cat 1 output "$1.pdf"
-rm "$1-temp.pdf"
+rm "${1}-temp.pdf"

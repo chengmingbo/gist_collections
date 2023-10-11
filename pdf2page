@@ -25,5 +25,6 @@ else
   output="${3}/${base_predix}_${page}.pdf"
 fi
 
-echo pdftk "${input}" cat "$page" "$output"
-pdftk "${input}" cat "$page" output "$output"
+gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output}" "${input}"
+#echo pdftk "${input}" cat "$page" "$output"
+#pdftk "${input}" cat "$page" output "$output"

@@ -9,7 +9,7 @@ else
     echo "file $input does not exist."
     exit 1
 fi
-base_name=`basename ${input}`
+base_name=`basename "${input}"`
 base_predix="${base_name%.*}"
 parent_dir=`dirname "$input"`
 pages=`echo "$pages" | tr '[:upper:]' '[:lower:]'`
@@ -48,9 +48,8 @@ then
 
     pdfcrop  --noverbose "${output_base}-temp.pdf" "${output}"
     rm "${output_base}-temp.pdf"
-    #echo gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${output_base}.pdf"
-    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=1 -dLastPage=1  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${output_base}.pdf"
-    rm "${output_base}.pdf"
+    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${input}"
+    rm ${output}
   done
 else
   echo ","
@@ -76,14 +75,10 @@ else
 
     pdfcrop --noverbose "${output_base}-temp.pdf" "${output}"
     rm "${output_base}-temp.pdf"
-
-    #echo gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${output_base}.pdf"
-    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=1 -dLastPage=1  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${output_base}.pdf"
-    rm "${output_base}.pdf"
-
+    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${input}"
+    rm ${output}
   done
   ## comma
   #page_start=$(echo "$page" | cut -d- -f1)
   #page_end=$(echo "$page" | cut -d- -f2)
-  #echo "$output"
 fi

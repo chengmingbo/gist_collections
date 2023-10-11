@@ -1,0 +1,4 @@
+ghostscript
+pdfcrop ## latex
+pdf2svg
+qpdf
