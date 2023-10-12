@@ -48,7 +48,7 @@ then
 
     pdfcrop  --noverbose "${output_base}-temp.pdf" "${output}"
     rm "${output_base}-temp.pdf"
-    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${input}"
+    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${output}"
     rm ${output}
   done
 else
@@ -75,7 +75,7 @@ else
 
     pdfcrop --noverbose "${output_base}-temp.pdf" "${output}"
     rm "${output_base}-temp.pdf"
-    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${input}"
+    gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r500  -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${output}"
     rm ${output}
   done
   ## comma
