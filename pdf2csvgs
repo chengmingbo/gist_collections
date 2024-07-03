@@ -1,0 +1,98 @@
+#!/bin/bash
+input="$1"
+pages="$2"
+directory=$3
+size=$4
+
+
+if [ -z "$size" ]; then
+    echo "default size is 100."
+    size=100
+else
+    echo "size is $size"
+fi
+
+
+if test -f "$input"; then
+    echo
+else
+    echo "file $input does not exist."
+    exit 1
+fi
+base_name=`basename "${input}"`
+base_predix="${base_name%.*}"
+parent_dir=`dirname "$input"`
+pages=`echo "$pages" | tr '[:upper:]' '[:lower:]'`
+
+if [[ "${pages}" == "all" ]];
+then
+  last_page=`qpdf --show-npages "${input}"`
+  pages="1-$last_page"
+fi
+
+if [[ $var =~ ^-?[0-9]+$ ]] ; then
+   pages=${pages}-${pages}
+fi
+
+echo "pages: >>>>>>>>" $pages "<<<<<<<<"
+if [[ $pages == *-* ]]
+then
+  page_start=$(echo "$pages" | cut -d- -f1)
+  page_end=$(echo "$pages" | cut -d- -f2)
+  #for page in {$page_start..$page_end}
+  for (( page=$page_start; page<=$page_end; page++ ))
+  do
+    output="${parent_dir}/${base_predix}_${page}.pdf"
+    output_base="${parent_dir}/${base_predix}_${page}"
+    if [ -z "$directory" ]
+    then
+      #empty
+      echo
+    else
+      output="${directory}/${base_predix}_${page}.pdf"
+      output_base="${directory}/${base_predix}_${page}"
+    fi
+
+    #echo pdftk "${input}" cat "$page" output "$output"
+    gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=$page -dLastPage=$page -sstdout=/dev/null -sOutputFile="${output_base}-temp.pdf" "${input}"
+
+    pdfcrop  --noverbose "${output_base}-temp.pdf" "${output}"
+    rm "${output_base}-temp.pdf"
+    pdf2svg ${output} ${output_base}.svg
+    echo pdf2svg ${output} ${output_base}.svg
+    #gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r$size  -dFirstPage=1 -dLastPage=1  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${output}"
+    rm ${output}
+  done
+else
+  echo ","
+  IFS=',' read -r -a page_array <<< "$pages"
+  for page in "${page_array[@]}"
+  do
+    output="${parent_dir}/${base_predix}_${page}.pdf"
+    output_base="${parent_dir}/${base_predix}_${page}"
+    if [ -z "$directory" ]
+    then
+      #empty
+      echo
+    else
+      output="${directory}/${base_predix}_${page}.pdf"
+      output_base="${directory}/${base_predix}_${page}"
+    fi
+
+    #echo pdftk "${input}" cat "$page" output "$output"
+    # pdfjam(TeX) <input file> <page ranges> -o <output file>
+    # pdfseparate -f 1 -l 1 sample.pdf sample-1.pdf
+    # qpdf input.pdf --pages . 1-10 -- output.pdf
+    gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=$page -dLastPage=$page  -sstdout=/dev/null -sOutputFile="${output_base}-temp.pdf" "${input}"
+
+    pdfcrop --noverbose "${output_base}-temp.pdf" "${output}"
+    rm "${output_base}-temp.pdf"
+    pdf2svg ${output} ${output_base}.svg
+    echo pdf2svg ${output} ${output_base}.svg
+    #echo gs -sDEVICE=pngalpha -dNOPAUSE -dBATCH -dSAFER  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r$size  -dFirstPage=1 -dLastPage=1  -sstdout=/dev/null -sOutputFile="${output_base}.png" "${output}"
+    rm ${output}
+  done
+  ## comma
+  #page_start=$(echo "$page" | cut -d- -f1)
+  #page_end=$(echo "$page" | cut -d- -f2)
+fi

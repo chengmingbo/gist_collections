@@ -1,0 +1,1 @@
+inkscape --verb=FitCanvasToDrawing --verb=FileSave --verb=FileQuit $1
