@@ -1,0 +1,13 @@
+#!/bin/bash
+fname="$1"
+pagesize=( $(pdfinfo "$fname" | grep "Page size" | cut -d ":" -f2 | \
+    awk '{ print $1,$3 }') )
+bounding=( $(pdfcrop --verbose "$fname" | grep "%%HiResBoundingBox" | \
+    cut -d":" -f2 ) )
+rm "${fname//.pdf/-crop.pdf}"
+lmarg="${bounding[0]}"
+rmarg="$(python -c "print('{:.3f}'.format(${pagesize[0]} - ${bounding[2]}))")"
+echo 'lmargin:rmargin ', $lmarg: $rmarg
+pdfcrop --margins "$lmarg 0 $rmarg 0" "$fname" "$fname"
+
+
