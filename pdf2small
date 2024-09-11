@@ -1,0 +1,41 @@
+# Convert PDF to encapsulated PostScript.
+# usage:
+# pdf2eps <page number> <pdf file without ext>
+input="$1"
+size="$2"
+
+if test -f "$input"; then
+    echo
+else
+    echo "file $input does not exist."
+    exit 1
+fi
+
+base_name=`basename "${input}"`
+base_predix="${base_name%.*}"
+parent_dir=`dirname "$input"`
+
+
+#pages=`echo "$pages" | tr '[:upper:]' '[:lower:]'`
+#
+#
+
+if [ ! -z "$size" -a "$size"!=" " ];
+then
+   echo "$size"
+else
+   echo 'by default prepress \noptions:  screen | ebook | prepress | printer | default'
+   size=prepress
+fi
+
+
+
+
+mv "${input}" "${parent_dir}/${base_predix}-temp.pdf"
+#mv "$1-temp.pdf" "$1.pdf"
+#pdftk  "$1-temp.pdf" cat 1 output "$1.pdf"
+#pdfjam "$1-temp.pdf"  1 -o "$1.pdf"
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/$size -dNOPAUSE -dQUIET -dBATCH -sOutputFile=${input} "${parent_dir}/${base_predix}-temp.pdf"
+
+#pdftk  "$1-temp.pdf" cat 1 output "$1.pdf"
+rm "${parent_dir}/${base_predix}-temp.pdf"
