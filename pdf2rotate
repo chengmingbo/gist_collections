@@ -16,4 +16,6 @@ parent_dir=`dirname "$input"`
 
 
 gs -dNOPAUSE -dBATCH -sDEVICE=ps2write -sOutputFile=temp.ps ${input}
- gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=${input} -dAutoRotatePages=/None -c "<</Orientation 1>> setpagedevice" -f temp.ps
+gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=${input} -dAutoRotatePages=/None -c "<</Orientation 1>> setpagedevice" -f temp.ps
+
+rm temp.ps
