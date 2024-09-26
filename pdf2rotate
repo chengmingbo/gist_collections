@@ -1,0 +1,19 @@
+input="$1"
+#pages="$2"
+#directory=$3
+
+if test -f "$input"; then
+    echo
+else
+    echo "file $input does not exist."
+    exit 1
+fi
+
+base_name=`basename "${input}"`
+base_predix="${base_name%.*}"
+parent_dir=`dirname "$input"`
+
+
+
+gs -dNOPAUSE -dBATCH -sDEVICE=ps2write -sOutputFile=temp.ps ${input}
+ gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=${input} -dAutoRotatePages=/None -c "<</Orientation 1>> setpagedevice" -f temp.ps
